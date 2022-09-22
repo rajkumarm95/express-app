@@ -120,7 +120,6 @@ productRoute.route('/:id')
                 try {
                     const _id = req.params.id;
                     const data = req.body
-                    data.updatedAt = Date.now()
                     if(req.file){
                         const img = fs.readFileSync(req.file.path);
                         const image = img.toString("base64");
