@@ -39,7 +39,7 @@ productRoute.get('/',async (req,res)=>{
                         res.json(product);
                     } catch (error) {
                         console.log(error);
-                        res.json({mes:'something went wrong'})
+                        res.json({mes:'Something went wrong'})
 
                     }
 
@@ -63,7 +63,7 @@ productRoute.post("/", upload.single("image"), async (req, res) => {
                         res.json(product);
                     } catch (error) {
                         console.log(error);
-                        res.json({mes:'something went wrong'})
+                        res.json({mes:'Something went wrong'})
                     }
 
                 });
@@ -79,11 +79,11 @@ productRoute.delete("/", async (req, res) => {
                               mes: `${product.deletedCount} products has been deleted`,
                             });
                           } else {
-                            res.json({ mes: "no records to delete" });
+                            res.json({ mes: "No records to delete" });
                           }
                     } catch (error) {
                           console.log(error);
-                          res.json({ mes: "something went wrong" });
+                          res.json({ mes: "Something went wrong" });
                     }
                 });
 
@@ -96,7 +96,7 @@ productRoute.get("/published", async (req, res) => {
                         res.json(product);
                     } catch (error) {
                         console.log(error);
-                        res.json({ mes: "something went wrong" });
+                        res.json({ mes: "Something went wrong" });
                     }
                 });
 
@@ -113,7 +113,7 @@ productRoute.route('/:id')
                     res.json(product);
                 } catch (error) {
                       console.log(error);
-                      res.json({ mes: "something went wrong" });
+                      res.json({ mes: "Something went wrong" });
                 }
             })
             .put(upload.single("image"),async (req,res)=>{
@@ -124,36 +124,36 @@ productRoute.route('/:id')
                         const img = fs.readFileSync(req.file.path);
                         const image = img.toString("base64");
                         data.image = image;
+                        fs.unlinkSync(req.file.path);
                     }
                     const product = await Product.updateOne({_id},{...data})
-                    fs.unlinkSync(req.file.path);
 
                     if(product.modifiedCount){
-                        res.json({mes: 'product updated successfully'})
+                        res.json({mes: 'Product updated successfully'})
                     }else{
-                       res.json({ mes: "error in updating product" });
+                       res.json({ mes: "Product already up to date" });
                     }
                 } catch (error) {
                     console.log(error);
-                    res.json({ mes: "something went wrong" });
+                    res.json({ mes: "Something went wrong" });
                 }
             })
             .delete(async (req,res)=> {
                 try {
-                    const _id = req.params.id;
-                    const product = await Product.deleteOne({_id});
-                    if (product.deletedCount > 0) {
+                    const id = req.params.id;
+                    const product = await Product.findByIdAndDelete(id);
+                    if (product) {
                         res.json({
-                            mes: ` products with id : ${id} has been deleted`,
+                            mes: ` Products with id : ${id} has been deleted`,
                         });
                     } else {
                         res.json({
-                            mes: `cannot find the product with id :${id}`
+                            mes: `Cannot find the product with id :${id}`
                         });
                     }
                 } catch (error) {
                     console.log(error);
-                    res.json({ mes: "something went wrong" });
+                    res.json({ mes: "Something went wrong" });
                 }
             })
 
