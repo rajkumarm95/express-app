@@ -7,11 +7,11 @@ const productSchema = new mongoose.Schema({
     description: String,
     published: Boolean,
     image: String,
-    CreatedAt: {
+    createdAt: {
         type: Date,
         default: () => Date.now(),
       },
-    upDatedAt: {
+    updatedAt: {
         type: Date,
         default: () => Date.now(),
       },

@@ -25,7 +25,7 @@ var upload = multer({ storage: Storage });
 
 /**
  * @route get all products
- * @route find all products by name
+ * @route find products by name
  */
 productRoute.get('/',async (req,res)=>{
                     try {
@@ -120,6 +120,7 @@ productRoute.route('/:id')
                 try {
                     const _id = req.params.id;
                     const data = req.body
+                    data.updatedAt = Date.now()
                     if(req.file){
                         const img = fs.readFileSync(req.file.path);
                         const image = img.toString("base64");
