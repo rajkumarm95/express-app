@@ -28,7 +28,9 @@ app.get('/health', (req,res)=>{
     res.send('healthy')
 })
 
-
+/**
+ * @route products route
+ */
 app.use("/api/products", productRoute);
 
 app.listen(port, ()=> console.log(`server started on port : ${port}`))

@@ -10,16 +10,16 @@ const productRoute = express.Router();
  * @desc Multer storage
  */
 var Storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
+        destination: (req, file, cb) => {
+            cb(null, "uploads");
+        },
+        filename: (req, file, cb) => {
+            cb(null, Date.now() + "-" + file.originalname);
+        },
 });
 
 /**
- * multer upload
+ * @desc multer upload
  */
 var upload = multer({ storage: Storage });
 
@@ -53,14 +53,14 @@ productRoute.post("/", upload.single("image"), async (req, res) => {
                         const img = fs.readFileSync(req.file.path);
                         const base64Img = img.toString("base64");
                         const product = await Product.create({
-                            name: req.body.name,
-                            description: req.body.desc,
-                            published: req.body.published,
-                            image: base64Img,
+                          name: req.body.name,
+                          description: req.body.description,
+                          published: req.body.published,
+                          image: base64Img,
                         });
                         await product.save();
-                        res.json(product);
                         fs.unlinkSync(req.file.path)
+                        res.json(product);
                     } catch (error) {
                         console.log(error);
                         res.json({mes:'something went wrong'})
@@ -116,14 +116,32 @@ productRoute.route('/:id')
                       res.json({ mes: "something went wrong" });
                 }
             })
-            .put((req,res)=>{
-                const id = req.params.id;
-                res.json({mes: 'edit a product', id})
+            .put(upload.single("image"),async (req,res)=>{
+                try {
+                    const _id = req.params.id;
+                    const data = req.body
+                    if(req.file){
+                        const img = fs.readFileSync(req.file.path);
+                        const image = img.toString("base64");
+                        data.image = image;
+                    }
+                    const product = await Product.updateOne({_id},{...data})
+                    fs.unlinkSync(req.file.path);
+
+                    if(product.modifiedCount){
+                        res.json({mes: 'product updated successfully'})
+                    }else{
+                       res.json({ mes: "error in updating product" });
+                    }
+                } catch (error) {
+                    console.log(error);
+                    res.json({ mes: "something went wrong" });
+                }
             })
             .delete(async (req,res)=> {
-                 try {
-                    const id = req.params.id;
-                    const product = await Product.deleteOne({_id: id});
+                try {
+                    const _id = req.params.id;
+                    const product = await Product.deleteOne({_id});
                     if (product.deletedCount > 0) {
                         res.json({
                             mes: ` products with id : ${id} has been deleted`,
